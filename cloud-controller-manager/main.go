@@ -19,24 +19,30 @@ package main
 import (
 	goflag "flag"
 	"fmt"
+	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	utilflag "k8s.io/apiserver/pkg/util/flag"
-	"k8s.io/apiserver/pkg/util/logs"
+
 	"k8s.io/cloud-provider-azure/cloud-controller-manager/version"
+	cliflag "k8s.io/component-base/cli/flag"
+	"k8s.io/component-base/logs"
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app"
 	azureprovider "k8s.io/kubernetes/pkg/cloudprovider/providers/azure"
 )
+
+var metricsPort = pflag.Int("metrics-port", 8089, "Port to expose Prometheus metrics on")
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	command := app.NewCloudControllerManagerCommand()
-	pflag.CommandLine.SetNormalizeFunc(utilflag.WordSepNormalizeFunc)
+	pflag.CommandLine.SetNormalizeFunc(cliflag.WordSepNormalizeFunc)
 	pflag.CommandLine.AddGoFlagSet(goflag.CommandLine)
 
 	logs.InitLogs()
@@ -65,6 +71,11 @@ func main() {
 		}
 		innerRun(cmd, args)
 	}
+
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *metricsPort), nil))
+	}()
 
 	if err := command.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
