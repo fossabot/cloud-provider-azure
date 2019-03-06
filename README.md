@@ -1,4 +1,6 @@
 # Cloud provider for Azure
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffeiskyer%2Fcloud-provider-azure.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffeiskyer%2Fcloud-provider-azure?ref=badge_shield)
+
 
 ## Introduction
 
@@ -66,3 +68,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for instructions on how to contrib
 ## NOTE
 
 Currently this repository is used for building and testing cloud-controller-manager for Azure, it references Azure cloud provider implementation code as [vendor dir](vendor/k8s.io/kubernetes/pkg/cloudprovider/providers/azure). After handoff, the Azure cloud provider implementation will be moved here.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffeiskyer%2Fcloud-provider-azure.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffeiskyer%2Fcloud-provider-azure?ref=badge_large)
